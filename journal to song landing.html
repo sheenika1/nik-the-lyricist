@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Journal to Song · Nik the Lyricist</title>
+<meta name="description" content="Send me a page from your journal and I'll turn it into song lyrics that sound like your healing. Founding price $75.">
+<meta property="og:title" content="Journal to Song">
+<meta property="og:description" content="Your thoughts, out loud. Your journal page, turned into your song. Founding spots $75.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@300;400;500&display=swap">
+<style>
+/* ============================================================
+   EDIT HERE: paste your Stripe payment link between the quotes
+   in the <script> at the bottom of this file (STRIPE_LINK).
+   ============================================================ */
+:root{
+  /* Nik the Lyricist palette */
+  --oat:#FAF5EC; --page:#FFFCF6; --plum:#1E1633; --terra:#CF4A2E; --ink:#2B2238;
+  --gold:#C98A3C; --goldpill:#C98A3C; --blush:#F5E6D8; --muted:#6E6478; --line:#E8DCC8;
+  --night:#1E1633; --wine:#2E2148; --cream:#FAF5EC;
+  --display:"Playfair Display", Georgia, serif;
+  --serif:"Lora", Georgia, serif;
+  --sans:"Poppins", "Segoe UI", system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--oat);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.7;font-weight:400}
+.wrap{max-width:960px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--display);font-weight:400;color:var(--plum);margin:0;text-wrap:balance}
+p{margin:0}
+.eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terra)}
+.btn{display:inline-block;font-family:var(--sans);font-size:.95rem;font-weight:400;letter-spacing:.02em;text-decoration:none;background:var(--goldpill);color:#2A1520;padding:15px 30px;border-radius:999px;transition:transform .15s, background .15s}
+.btn:hover{background:#D89B4D;transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+.btn.plum{background:var(--plum);color:var(--cream)}
+.btn.plum:hover{background:#2E2148}
+.brand small{display:block;font-family:var(--sans);font-style:normal;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.btn.plum:focus-visible{outline-color:var(--gold)}
+
+/* hero */
+.hero{background:linear-gradient(165deg,var(--night) 0%,var(--wine) 100%);color:var(--cream);padding-block:28px 72px;position:relative;overflow:hidden}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:56px}
+.brand{font-family:var(--display);font-style:italic;font-size:1.15rem;color:var(--cream);text-decoration:none}
+.topbar a.small{font-family:var(--sans);font-size:.8rem;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:6px 14px;border-radius:999px}
+.hero-grid{display:grid;gap:40px;align-items:center}
+@media (min-width:820px){.hero-grid{grid-template-columns:1.1fr .9fr}}
+.hero .eyebrow{color:var(--gold)}
+.hero h1{color:var(--cream);font-size:clamp(2.6rem,8vw,4.2rem);line-height:1.02;margin-block:14px 20px}
+.hero h1 em{color:var(--gold)}
+.hero p.lede{color:#E9DCCB;max-width:46ch;font-size:1.08rem}
+.hero .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:28px}
+.spots{font-family:var(--sans);font-size:.82rem;font-weight:300;color:#E9DCCB}
+.spots span{color:var(--gold)}
+
+/* journal-to-lyric transformation card */
+.transform{position:relative;display:grid;gap:0;max-width:420px;justify-self:center;width:100%}
+.journal{background:#FBF6EC;color:#3A2A2E;padding:26px 24px 30px;transform:rotate(-2deg);box-shadow:0 18px 40px rgba(0,0,0,.35);background-image:repeating-linear-gradient(transparent,transparent 29px,#E3D3B8 29px,#E3D3B8 30px);background-position:0 18px;line-height:30px}
+.journal .date{font-family:var(--sans);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#A85A3C}
+.journal p{font-family:var(--serif);font-style:italic;font-size:1rem}
+.arrow{justify-self:center;font-family:var(--sans);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding:14px 0;display:flex;align-items:center;gap:10px}
+.arrow::before,.arrow::after{content:"";width:28px;height:1px;background:var(--gold)}
+.lyric{border:1px solid var(--gold);padding:22px 24px;transform:rotate(1.2deg);background:rgba(36,18,32,.6)}
+.lyric .tag{font-family:var(--sans);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.lyric p{font-family:var(--display);font-style:italic;font-size:1.12rem;line-height:1.55;color:var(--cream);margin-top:6px}
+
+/* sections */
+section.block{padding-block:72px}
+.center{text-align:center;display:grid;gap:14px;justify-items:center}
+.center h2{font-size:clamp(1.9rem,5vw,2.7rem);max-width:20ch}
+.center p{max-width:58ch}
+
+.steps{display:grid;gap:18px;margin-top:40px;counter-reset:s}
+@media (min-width:760px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--page);padding:28px 24px;display:grid;gap:10px;align-content:start;border-top:2px solid var(--gold)}
+.step .n{font-family:var(--display);font-size:2.4rem;line-height:1;color:var(--gold)}
+.step h3{font-size:1.3rem}
+
+.feel{background:var(--blush)}
+.feel-grid{display:grid;gap:32px;align-items:center}
+@media (min-width:760px){.feel-grid{grid-template-columns:1fr 1fr}}
+.feel h2{font-size:clamp(1.8rem,4.6vw,2.4rem)}
+.feel ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.feel li{padding-left:26px;position:relative}
+.feel li::before{content:"";position:absolute;left:0;top:.75em;width:12px;height:1px;background:var(--terra)}
+
+/* offer */
+.tiers{display:grid;gap:20px;max-width:900px;margin:40px auto 0}
+@media (min-width:760px){.tiers{grid-template-columns:1fr 1fr}}
+.offer{background:var(--page);padding:34px 26px;display:grid;gap:18px;border:1px solid var(--gold);text-align:left;align-content:start;min-width:0}
+.offer h3{font-size:1.5rem}
+.offer.featured{background:var(--night);color:var(--cream)}
+.offer.featured h3,.offer.featured .price{color:var(--cream)}
+.offer.featured .pill{background:var(--gold);color:var(--night)}
+.offer .btn{align-self:end}
+.offer .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.price{font-family:var(--display);font-size:3.2rem;color:var(--plum);line-height:1}
+.price s{font-size:1.3rem;color:var(--muted);margin-left:8px}
+.pill{font-family:var(--sans);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;background:var(--blush);color:var(--plum);padding:5px 12px;border-radius:999px}
+.offer ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.offer li{display:flex;gap:12px;align-items:flex-start}
+.offer li::before{content:"";flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:.65em}
+.offer .btn{text-align:center}
+.fine{font-family:var(--sans);font-size:.78rem;font-weight:300;color:var(--muted);text-align:center}
+.after{background:var(--blush);padding:16px 18px;font-size:.95rem}
+.after .eyebrow{display:block;margin-bottom:4px}
+.email{font-family:var(--sans);font-size:.9rem;color:var(--plum);user-select:all;word-break:break-all}
+
+/* faq */
+.faq{max-width:720px;margin:40px auto 0;display:grid}
+details{border-bottom:1px solid var(--line);padding:18px 0}
+summary{cursor:pointer;font-family:var(--display);font-size:1.15rem;color:var(--plum);list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--sans);color:var(--gold);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+summary:focus-visible{outline:2px solid var(--terra);outline-offset:4px}
+details p{margin-top:10px;color:var(--ink)}
+
+/* closing */
+.closing{background:linear-gradient(165deg,var(--night),var(--wine));color:var(--cream);padding-block:72px}
+.closing h2{color:var(--cream)}
+.closing p{color:#E9DCCB}
+.closing .eyebrow{color:var(--gold)}
+footer{background:var(--night);color:#B9A3A6;font-family:var(--sans);font-size:.78rem;font-weight:300;padding-block:24px calc(24px + env(safe-area-inset-bottom,0px))}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--gold);text-decoration:none}
+
+/* gentle load-in from a visible state */
+@media (prefers-reduced-motion:no-preference){
+  .journal{animation:settleL .9s ease both}
+  .lyric{animation:settleR .9s .25s ease both}
+  @keyframes settleL{from{transform:rotate(-5deg) translateY(8px)}to{transform:rotate(-2deg)}}
+  @keyframes settleR{from{transform:rotate(3deg) translateY(8px)}to{transform:rotate(1.2deg)}}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="https://nikthelyricist.com">Nik the Lyricist<small>Journal to Song</small></a>
+      <a class="small" href="#offer">Claim a spot</a>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Your thoughts, out loud</span>
+        <h1>The page you wrote at 2am, <em>turned into your song.</em></h1>
+        <p class="lede">The things you've only ever said on paper deserve to be heard. Send me a page from your journal and I'll turn your thoughts into song lyrics that sound like your healing, your faith and your glow up.</p>
+        <div class="cta-row">
+          <a class="btn" href="#offer">See the options</a>
+          <span class="spots">Only <span>5</span> founding spots at this price</span>
+        </div>
+      </div>
+
+      <div class="transform" aria-label="Example: a journal entry turned into lyrics">
+        <div class="journal">
+          <span class="date">Tuesday, late</span>
+          <p>I keep apologizing for taking up space. I'm tired of shrinking so everybody else feels comfortable. God, help me remember who I was before I learned to be quiet.</p>
+        </div>
+        <div class="arrow">becomes</div>
+        <div class="lyric">
+          <span class="tag">Chorus</span>
+          <p>I'm done folding up so small,<br>done whispering to be heard at all.<br>Lord, remind me who I was before,<br>I'm taking up the space I'm made for.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="block" id="how">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">How it works</span>
+      <h2>Three steps from your page to your song</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">1</span>
+        <h3>Claim your spot</h3>
+        <p>Check out securely through Stripe. You'll get a confirmation right away.</p>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <h3>Send your page</h3>
+        <p>Email a photo or typed copy of one journal entry. Add the mood you want: soft, soulful, gospel, or anthem.</p>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <h3>Receive your lyrics</h3>
+        <p>Within 5–7 days you get a full set of lyrics: verses, chorus and bridge, written from your words.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block feel">
+  <div class="wrap feel-grid">
+    <div style="display:grid;gap:14px">
+      <span class="eyebrow">Who this is for</span>
+      <h2>For the woman who writes it down because she can't say it out loud yet</h2>
+    </div>
+    <ul>
+      <li>You journal to process, pray and heal, and want something beautiful to come out of it.</li>
+      <li>You want to hear your story in a song instead of only reading it back.</li>
+      <li>You want a gift for yourself that marks how far you've come.</li>
+      <li>You love music and always wished someone could put your feelings into words.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="block" id="offer">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Founding offer</span>
+      <h2>Your story deserves a song</h2>
+      <p>Get the words, or hear them sung. Founding lyrics are $75 for the first five orders, then the price goes up.</p>
+    </div>
+    <div class="after" style="max-width:900px;margin:32px auto 0;font-size:.92rem">
+      <span class="eyebrow">Before you order</span>
+      Every song is custom work written by Nik the Lyricist, who keeps the copyright and songwriter credit. Your order includes a personal-use license to keep, play, share and gift your song. Releasing it publicly or using it to make money requires the Release License add-on. Orders can't be refunded once writing begins. Please read the <a href="https://nikthelyricist.com/terms.html" style="color:var(--terra)">Terms &amp; Song License</a> before checkout.
+    </div>
+    <div class="tiers" style="margin-top:20px">
+      <div class="offer">
+        <h3>Founding Lyrics</h3>
+        <div class="row">
+          <span class="price">$75<s>$99</s></span>
+          <span class="pill">Founding price</span>
+        </div>
+        <ul>
+          <li>Full song lyrics written from one journal entry (up to 500 words)</li>
+          <li>Verses, chorus and bridge, ready to sing or record</li>
+          <li>Your choice of mood: soft, soulful, gospel or anthem</li>
+          <li>One round of revisions</li>
+          <li>Delivered by email in 5–7 days</li>
+        </ul>
+        <a class="btn plum js-stripe-lyrics" href="https://buy.stripe.com/fZu00jfdh5AR7Rw08P8Zq02" target="_blank" rel="noopener">Get my lyrics</a>
+      </div>
+      <div class="offer featured">
+        <h3>Hear It Sung</h3>
+        <div class="row">
+          <span class="price">$250<s>$300</s></span>
+          <span class="pill">Launch price</span>
+        </div>
+        <ul>
+          <li>Everything in Founding Lyrics</li>
+          <li>Your lyrics produced as a complete song</li>
+          <li>Sung by my artist, Alisha Inari</li>
+          <li>One round of revisions</li>
+          <li>Delivered as an audio file in 7–10 days</li>
+        </ul>
+        <a class="btn js-stripe-song" href="https://buy.stripe.com/7sY8wPe9d7IZfjYaNt8Zq03" target="_blank" rel="noopener">Make it a song</a>
+      </div>
+    </div>
+    <p class="fine" style="margin-top:18px">Secure checkout through Stripe. Add more songs from more journal entries, rush delivery, extra revisions, a keepsake lyric sheet, a long entry or a Release License at checkout. By ordering you agree to the <a href="https://nikthelyricist.com/terms.html" style="color:var(--terra)">Terms &amp; Song License</a>.</p>
+    <div class="after" style="max-width:720px;margin:16px auto 0">
+      <span class="eyebrow">After you check out</span>
+      Email your journal page and preferred mood to <span class="email">requests@jingleswithnik.com</span>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Questions</span>
+      <h2>Before you send your page</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Is my journal entry private?</summary>
+        <p>Yes. Your page is only used to write your lyrics. I never share it or post it without your permission.</p>
+      </details>
+      <details>
+        <summary>Do I get a recorded song?</summary>
+        <p>Choose Hear It Sung and your lyrics become a complete, produced song sung by my artist Alisha Inari, delivered as an audio file you can keep and play anytime.</p>
+      </details>
+      <details>
+        <summary>What if my entry is messy or really long?</summary>
+        <p>Messy is perfect. Send one entry up to about 500 words, roughly one handwritten page. If it's longer, I'll pull out the heart of it, or you can add the Long Entry option at checkout for full-length pages.</p>
+      </details>
+      <details>
+        <summary>Can I give this as a gift?</summary>
+        <p>Yes. Buy the spot, then have her send her own page, or send me a letter you wrote to someone you love.</p>
+      </details>
+      <details>
+        <summary>Who owns the lyrics?</summary>
+        <p>I write the lyrics, so I keep the copyright and songwriter credit. Every order includes a personal-use license: keep it, play it, share it and gift it. Want to release it on Spotify or perform it for pay? Add the Release License at checkout. Full details are in the <a href="https://nikthelyricist.com/terms.html" style="color:var(--terra)">Terms &amp; Song License</a>.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap center">
+    <span class="eyebrow">Five spots only</span>
+    <h2>Stop rereading the page. Start hearing it.</h2>
+    <p>Your words already carry the song. Let me help you hear it.</p>
+    <a class="btn" href="#offer" style="margin-top:10px">Choose my song option</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 <a href="https://nikthelyricist.com">Nik the Lyricist</a> · Nik Co Holdings</span>
+    <span><a href="https://nikthelyricist.com/terms.html">Terms &amp; Song License</a> · Questions: requests@jingleswithnik.com</span>
+  </div>
+</footer>
+
+<script>
+  /* ======== PASTE YOUR STRIPE PAYMENT LINKS BETWEEN THE QUOTES ======== */
+  const LYRICS_LINK = "https://buy.stripe.com/fZu00jfdh5AR7Rw08P8Zq02";   // Founding Lyrics $75
+  const SONG_LINK   = "https://buy.stripe.com/7sY8wPe9d7IZfjYaNt8Zq03";     // Hear It Sung $250 (launch)
+  /* ==================================================================== */
+
+  function wire(selector, link) {
+    if (!link.startsWith("https://")) return;
+    document.querySelectorAll(selector).forEach(function (a) {
+      a.href = link; a.target = "_blank"; a.rel = "noopener";
+    });
+  }
+  wire(".js-stripe-lyrics", LYRICS_LINK);
+  wire(".js-stripe-song", SONG_LINK);
+  /* Hero and closing buttons scroll down to the two options */
+</script>
+</body>
+</html>
