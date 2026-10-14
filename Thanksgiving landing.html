@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Family Song · Nik the Lyricist</title>
+<meta name="description" content="A custom Thanksgiving song written from your family's names, dishes, traditions and memories. Holiday special. Order by November 15.">
+<meta property="og:title" content="The Family Song · A Thanksgiving Original">
+<meta property="og:description" content="Your family's story, served with a song. Order by November 15.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@300;400;500&display=swap">
+<style>
+/* ============================================================
+   EDIT HERE: paste your Stripe payment link between the quotes
+   in the <script> at the bottom of this file (STRIPE_LINK).
+   ============================================================ */
+:root{
+  /* Nik the Lyricist palette */
+  --oat:#FAF3E8; --page:#FFFBF4; --plum:#3A1F17; --terra:#B5532F; --ink:#2E211C;
+  --gold:#C98A3C; --goldpill:#C98A3C; --blush:#F5E6D8; --muted:#6E6478; --line:#E8DCC8;
+  --night:#2E1813; --wine:#5A2E1E; --cream:#FAF3E8;
+  --display:"Playfair Display", Georgia, serif;
+  --serif:"Lora", Georgia, serif;
+  --sans:"Poppins", "Segoe UI", system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--oat);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.7;font-weight:400}
+.wrap{max-width:960px;margin:0 auto;padding-inline:20px}
+h1,h2,h3{font-family:var(--display);font-weight:400;color:var(--plum);margin:0;text-wrap:balance}
+p{margin:0}
+.eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terra)}
+.btn{display:inline-block;font-family:var(--sans);font-size:.95rem;font-weight:400;letter-spacing:.02em;text-decoration:none;background:var(--goldpill);color:#2A1520;padding:15px 30px;border-radius:999px;transition:transform .15s, background .15s}
+.btn:hover{background:#D89B4D;transform:translateY(-1px)}
+.btn:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+.btn.plum{background:var(--plum);color:var(--cream)}
+.btn.plum:hover{background:#2E2148}
+.brand small{display:block;font-family:var(--sans);font-style:normal;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.btn.plum:focus-visible{outline-color:var(--gold)}
+
+/* hero */
+.hero{background:linear-gradient(165deg,var(--night) 0%,var(--wine) 100%);color:var(--cream);padding-block:28px 72px;position:relative;overflow:hidden}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:56px}
+.brand{font-family:var(--display);font-style:italic;font-size:1.15rem;color:var(--cream);text-decoration:none}
+.topbar a.small{font-family:var(--sans);font-size:.8rem;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:6px 14px;border-radius:999px}
+.hero-grid{display:grid;gap:40px;align-items:center}
+@media (min-width:820px){.hero-grid{grid-template-columns:1.1fr .9fr}}
+.hero .eyebrow{color:var(--gold)}
+.hero h1{color:var(--cream);font-size:clamp(2.6rem,8vw,4.2rem);line-height:1.02;margin-block:14px 20px}
+.hero h1 em{color:var(--gold)}
+.hero p.lede{color:#E9DCCB;max-width:46ch;font-size:1.08rem}
+.hero .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:28px}
+.listen-link{font-family:var(--sans);font-size:.88rem;color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:2px}
+.listen-link:hover{color:var(--cream)}
+.listen{padding-top:0}
+.player{max-width:760px;margin:32px auto 0;border:1px solid var(--gold);padding:10px;background:var(--page)}
+.player iframe{display:block;border:0}
+.spots{font-family:var(--sans);font-size:.82rem;font-weight:300;color:#E9DCCB}
+.spots span{color:var(--gold)}
+
+/* journal-to-lyric transformation card */
+.transform{position:relative;display:grid;gap:0;max-width:420px;justify-self:center;width:100%}
+.journal{background:#FBF6EC;color:#3A2A2E;padding:26px 24px 30px;transform:rotate(-2deg);box-shadow:0 18px 40px rgba(0,0,0,.35);background-image:repeating-linear-gradient(transparent,transparent 29px,#E3D3B8 29px,#E3D3B8 30px);background-position:0 18px;line-height:30px}
+.journal .date{font-family:var(--sans);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#A85A3C}
+.journal p{font-family:var(--serif);font-style:italic;font-size:1rem}
+.arrow{justify-self:center;font-family:var(--sans);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);padding:14px 0;display:flex;align-items:center;gap:10px}
+.arrow::before,.arrow::after{content:"";width:28px;height:1px;background:var(--gold)}
+.lyric{border:1px solid var(--gold);padding:22px 24px;transform:rotate(1.2deg);background:rgba(36,18,32,.6)}
+.lyric .tag{font-family:var(--sans);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.lyric p{font-family:var(--display);font-style:italic;font-size:1.12rem;line-height:1.55;color:var(--cream);margin-top:6px}
+
+/* sections */
+section.block{padding-block:72px}
+.center{text-align:center;display:grid;gap:14px;justify-items:center}
+.center h2{font-size:clamp(1.9rem,5vw,2.7rem);max-width:20ch}
+.center p{max-width:58ch}
+
+.steps{display:grid;gap:18px;margin-top:40px;counter-reset:s}
+@media (min-width:760px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--page);padding:28px 24px;display:grid;gap:10px;align-content:start;border-top:2px solid var(--gold)}
+.step .n{font-family:var(--display);font-size:2.4rem;line-height:1;color:var(--gold)}
+.step h3{font-size:1.3rem}
+
+.feel{background:var(--blush)}
+.feel-grid{display:grid;gap:32px;align-items:center}
+@media (min-width:760px){.feel-grid{grid-template-columns:1fr 1fr}}
+.feel h2{font-size:clamp(1.8rem,4.6vw,2.4rem)}
+.feel ul{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.feel li{padding-left:26px;position:relative}
+.feel li::before{content:"";position:absolute;left:0;top:.75em;width:12px;height:1px;background:var(--terra)}
+
+/* offer */
+.tiers{display:grid;gap:20px;max-width:900px;margin:40px auto 0}
+@media (min-width:760px){.tiers{grid-template-columns:1fr 1fr}}
+.offer{background:var(--page);padding:34px 26px;display:grid;gap:18px;border:1px solid var(--gold);text-align:left;align-content:start;min-width:0}
+.offer h3{font-size:1.5rem}
+.offer.featured{background:var(--night);color:var(--cream)}
+.offer.featured h3,.offer.featured .price{color:var(--cream)}
+.offer.featured .pill{background:var(--gold);color:var(--night)}
+.offer .btn{align-self:end}
+.offer .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.price{font-family:var(--display);font-size:3.2rem;color:var(--plum);line-height:1}
+.price s{font-size:1.3rem;color:var(--muted);margin-left:8px}
+.pill{font-family:var(--sans);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;background:var(--blush);color:var(--plum);padding:5px 12px;border-radius:999px}
+.offer ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.offer li{display:flex;gap:12px;align-items:flex-start}
+.offer li::before{content:"";flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:.65em}
+.offer .btn{text-align:center}
+.fine{font-family:var(--sans);font-size:.78rem;font-weight:300;color:var(--muted);text-align:center}
+.after{background:var(--blush);padding:16px 18px;font-size:.95rem}
+.after .eyebrow{display:block;margin-bottom:4px}
+.email{display:inline-block;white-space:nowrap;font-family:var(--sans);font-size:.85rem;color:var(--plum);user-select:all}
+
+/* faq */
+.faq{max-width:720px;margin:40px auto 0;display:grid}
+details{border-bottom:1px solid var(--line);padding:18px 0}
+summary{cursor:pointer;font-family:var(--display);font-size:1.15rem;color:var(--plum);list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--sans);color:var(--gold);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+summary:focus-visible{outline:2px solid var(--terra);outline-offset:4px}
+details p{margin-top:10px;color:var(--ink)}
+
+/* closing */
+.closing{background:linear-gradient(165deg,var(--night),var(--wine));color:var(--cream);padding-block:72px}
+.closing h2{color:var(--cream)}
+.closing p{color:#E9DCCB}
+.closing .eyebrow{color:var(--gold)}
+footer{background:var(--night);color:#B9A3A6;font-family:var(--sans);font-size:.78rem;font-weight:300;padding-block:24px calc(24px + env(safe-area-inset-bottom,0px))}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--gold);text-decoration:none}
+
+/* gentle load-in from a visible state */
+@media (prefers-reduced-motion:no-preference){
+  .journal{animation:settleL .9s ease both}
+  .lyric{animation:settleR .9s .25s ease both}
+  @keyframes settleL{from{transform:rotate(-5deg) translateY(8px)}to{transform:rotate(-2deg)}}
+  @keyframes settleR{from{transform:rotate(3deg) translateY(8px)}to{transform:rotate(1.2deg)}}
+}
+</style>
+<style>
+.listen-link{font-family:var(--sans);font-size:.88rem;color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);padding-bottom:2px}
+.listen-link:hover{color:var(--cream)}
+.recipe{background:#FFFBF4;color:#2E211C;padding:24px 24px 26px;transform:rotate(-2deg);box-shadow:0 18px 40px rgba(0,0,0,.35);border-top:6px solid #B5532F;background-image:repeating-linear-gradient(transparent,transparent 29px,#EAD9C3 29px,#EAD9C3 30px);background-position:0 54px;line-height:30px}
+.recipe .rt{font-family:var(--display);font-style:italic;font-size:1.15rem;color:#B5532F;line-height:1.3;display:block}
+.recipe .rs{font-family:var(--sans);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:#7A6266;display:block;margin-bottom:6px}
+.recipe ul{list-style:none;margin:0;padding:0;font-family:var(--serif);font-style:italic;font-size:.98rem}
+.recipe li::before{content:"· ";color:#C98A3C}
+.send{display:grid;gap:14px;margin-top:36px}
+@media (min-width:700px){.send{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.send div{background:var(--page);padding:20px 22px;border-top:2px solid var(--gold);display:grid;gap:6px;align-content:start}
+.send h3{font-size:1.15rem}
+.send p{font-size:.95rem}
+.deadline{display:inline-block;font-family:var(--sans);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;background:var(--gold);color:#2E1813;padding:6px 14px;border-radius:999px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="https://nikthelyricist.com">Nik the Lyricist<small>The Family Song</small></a>
+      <a class="small js-stripe-song" href="https://buy.stripe.com/9B6aEXghld3j6Ns9Jp8Zq05" target="_blank" rel="noopener">Reserve your song</a>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">A Thanksgiving original</span>
+        <h1>Your family's story, <em>served with a song.</em></h1>
+        <p class="lede">The names around your table, Grandma's recipes, the jokes that never get old and the people you're missing this year. Tell me your family's story, and I'll write it into a song you can play when everyone's gathered.</p>
+        <div class="cta-row">
+          <a class="btn" href="#offer">See the options</a>
+          <a class="listen-link" href="https://soundcloud.com/nik-the-lyricist" target="_blank" rel="noopener">Listen to my songs</a>
+        </div>
+        <p style="margin-top:18px"><span class="deadline">Order by Nov 15 for Thanksgiving</span></p>
+      </div>
+
+      <div class="transform" aria-label="Example: a family recipe card turned into lyrics">
+        <div class="recipe">
+          <span class="rs">From the kitchen of</span>
+          <span class="rt">Grandma Ruth's Sweet Potato Pie</span>
+          <ul>
+            <li>Uncle Ray's terrible jokes</li>
+            <li>Every cousin, every year since '98</li>
+            <li>A seat saved for Granddaddy</li>
+          </ul>
+        </div>
+        <div class="arrow">becomes</div>
+        <div class="lyric">
+          <span class="tag">Chorus</span>
+          <p>Pass the pie and pull a chair,<br>Granddaddy's seat is still right there.<br>Every year since '98,<br>love's the first thing on our plate.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="block" id="how">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">How it works</span>
+      <h2>Three steps to your family's song</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">1</span>
+        <h3>Reserve your song</h3>
+        <p>Check out securely through Stripe by November 15. You'll get a confirmation right away.</p>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <h3>Tell me your story</h3>
+        <p>Email me your family's names, dishes, traditions and memories. Don't worry about wording. Just tell it like you'd tell a friend.</p>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <h3>Play it at the table</h3>
+        <p>Your song arrives before Thanksgiving, ready to play while the plates are passed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block feel">
+  <div class="wrap">
+    <div style="display:grid;gap:14px;max-width:640px">
+      <span class="eyebrow">What to send me</span>
+      <h2>The little details are what make it yours</h2>
+    </div>
+    <div class="send">
+      <div><h3>The names</h3><p>Who's at the table: grandparents, parents, kids, cousins, the friend who's basically family.</p></div>
+      <div><h3>The dates</h3><p>The year the tradition started, an anniversary, a first Thanksgiving, a new baby.</p></div>
+      <div><h3>The food</h3><p>Signature dishes and who makes them. Every family has a mac and cheese debate.</p></div>
+      <div><h3>The memories</h3><p>Inside jokes, funny moments, the story that gets told every single year.</p></div>
+      <div><h3>The ones we miss</h3><p>Anyone you'd like to honor who won't be at the table this year.</p></div>
+      <div><h3>The mood</h3><p>Soulful, gospel, upbeat and joyful, or a soft tribute.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="listen" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Listen first</span>
+      <h2>Hear my songwriting before you order</h2>
+      <p>Every song is written by me and sung by Alisha Inari. Press play and imagine your family's names in the next one.</p>
+    </div>
+    <p style="margin-top:22px;text-align:center"><a class="btn plum" href="https://soundcloud.com/nik-the-lyricist" target="_blank" rel="noopener">Listen on SoundCloud</a></p>
+  </div>
+</section>
+
+<section class="block" id="offer">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Holiday special</span>
+      <h2>Bring your family's story to the table</h2>
+      <p>Holiday pricing for Thanksgiving orders placed by November 15. Payment plans available.</p>
+    </div>
+    <div class="after" style="max-width:900px;margin:32px auto 0;font-size:.92rem">
+      <span class="eyebrow">Before you order</span>
+      Every song is custom work written by Nik the Lyricist, who keeps the copyright and songwriter credit. Your order includes a personal-use license to play it at gatherings, share it with family and gift it. Releasing it publicly or using it to make money requires the Release License add-on. Orders can't be refunded once writing begins. Please read the <a href="https://nikthelyricist.com/terms.html" style="color:var(--terra)">Terms &amp; Song License</a> before checkout.
+    </div>
+    <div class="tiers" style="margin-top:20px">
+      <div class="offer">
+        <h3>Family Lyrics</h3>
+        <div class="row">
+          <span class="price">$99</span>
+          <span class="pill">Holiday special</span>
+        </div>
+        <ul>
+          <li>Full song lyrics written from your family's story</li>
+          <li>Your names, dishes, dates and memories woven in</li>
+          <li>Ready to read aloud, sing or frame</li>
+          <li>One round of revisions</li>
+          <li>Delivered by email before Thanksgiving</li>
+        </ul>
+        <a class="btn plum js-stripe-lyrics" href="https://buy.stripe.com/6oU00jd597IZb3I5t98Zq04" target="_blank" rel="noopener">Get our lyrics</a>
+      </div>
+      <div class="offer featured">
+        <h3>The Family Song</h3>
+        <div class="row">
+          <span class="price">$199<s>$300</s></span>
+          <span class="pill">Holiday special</span>
+        </div>
+        <ul>
+          <li>Everything in Family Lyrics</li>
+          <li>Produced as a complete song</li>
+          <li>Sung by my artist, Alisha Inari</li>
+          <li>One round of revisions</li>
+          <li>Delivered as an audio file before Thanksgiving</li>
+        </ul>
+        <a class="btn js-stripe-song" href="https://buy.stripe.com/9B6aEXghld3j6Ns9Jp8Zq05" target="_blank" rel="noopener">Make our song</a>
+      </div>
+    </div>
+    <p class="fine" style="margin-top:18px"><span style="display:block;font-size:1.05rem;font-weight:500;color:var(--terra);margin-bottom:6px">Payment plans available at checkout</span>Secure checkout through Stripe. Rush delivery, extra revisions, a keepsake lyric sheet and more available at checkout. By ordering you agree to the <a href="https://nikthelyricist.com/terms.html" style="color:var(--terra)">Terms &amp; Song License</a>.</p>
+    <div class="after" style="max-width:720px;margin:16px auto 0">
+      <span class="eyebrow">After you check out</span>
+      Email your family's story to <span class="email">requests@jingleswithnik.com</span> within 48 hours.
+    </div>
+  </div>
+</section>
+
+<section class="block" style="padding-top:0">
+  <div class="wrap">
+    <div class="center">
+      <span class="eyebrow">Questions</span>
+      <h2>Before you send your story</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Will I get it before Thanksgiving?</summary>
+        <p>Yes, if you order by November 15 and send your family's story within 48 hours. Songs are delivered by November 24, so you have time to share it before the big day.</p>
+      </details>
+      <details>
+        <summary>Can the song honor someone we've lost?</summary>
+        <p>Absolutely. Tell me about them, a favorite dish, a saying or their seat at the table, and I'll write them in with love.</p>
+      </details>
+      <details>
+        <summary>How many names and memories can I include?</summary>
+        <p>Send as much as you like. A song fits about 8 to 12 names and a handful of memories best, and I'll choose the moments that sing.</p>
+      </details>
+      <details>
+        <summary>Can we play it at dinner and share it with family?</summary>
+        <p>Yes. Play it at gatherings, send it to relatives and post it on your personal social media. Releasing it on streaming services or using it commercially needs the Release License. Full details are in the <a href="https://nikthelyricist.com/terms.html" style="color:var(--terra)">Terms &amp; Song License</a>.</p>
+      </details>
+      <details>
+        <summary>What if I'm ordering after November 15?</summary>
+        <p>Email me before you order. If I still have space, Rush Delivery at checkout can get your song to you in time.</p>
+      </details>
+      <details>
+        <summary>Can my song include explicit lyrics or cursing?</summary>
+        <p>No. Every song I write is clean: no profanity and no explicit content. That keeps your song something you can proudly play for anyone, from the grandkids to Grandma.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap center">
+    <span class="eyebrow">Order by November 15</span>
+    <h2>This year, give them a song they'll replay every Thanksgiving.</h2>
+    <p>Your family's story is already the best part of the meal. Let me help you hear it.</p>
+    <a class="btn" href="#offer" style="margin-top:10px">Choose our song</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 <a href="https://nikthelyricist.com">Nik the Lyricist</a></span>
+    <span><a href="https://nikthelyricist.com/terms.html">Terms &amp; Song License</a> · Questions: <span style="white-space:nowrap">requests@jingleswithnik.com</span></span>
+  </div>
+</footer>
+
+<script>
+  /* ======== PASTE YOUR THANKSGIVING STRIPE LINKS BETWEEN THE QUOTES ======== */
+  const LYRICS_LINK = "https://buy.stripe.com/6oU00jd597IZb3I5t98Zq04";   // Family Lyrics $99
+  const SONG_LINK   = "https://buy.stripe.com/9B6aEXghld3j6Ns9Jp8Zq05";     // The Family Song $199
+  /* ========================================================================= */
+  function wire(selector, link) {
+    if (!link.startsWith("https://")) return;
+    document.querySelectorAll(selector).forEach(function (a) {
+      a.href = link; a.target = "_blank"; a.rel = "noopener";
+    });
+  }
+  wire(".js-stripe-lyrics", LYRICS_LINK);
+  wire(".js-stripe-song", SONG_LINK);
+</script>
+</body>
+</html>
